@@ -1,69 +1,64 @@
 import random
 import curses
 
-def generate_maze(height, width):
-    # Ensure odd dimensions for maze
-    maze_h, maze_w = (height // 2) * 2 + 1, (width // 2) * 2 + 1
-    maze = [['#'] * maze_w for _ in range(maze_h)]
-    stack = [(1, 1)]
-    maze[1][1] = ' '
-    while stack:
-        y, x = stack[-1]
-        neighbors = []
-        for dy, dx in [(-2,0),(2,0),(0,-2),(0,2)]:
-            ny, nx = y+dy, x+dx
-            if 1 <= ny < maze_h-1 and 1 <= nx < maze_w-1 and maze[ny][nx] == '#':
-                neighbors.append((ny, nx, dy, dx))
-        if neighbors:
-            ny, nx, dy, dx = random.choice(neighbors)
-            maze[y+dy//2][x+dx//2] = ' '
-            maze[ny][nx] = ' '
-            stack.append((ny, nx))
-        else:
-            stack.pop()
-    return maze
-
 def main(stdscr):
     curses.curs_set(0)
     sh, sw = stdscr.getmaxyx()
-    # Leave a border for safety
-    maze_h, maze_w = (sh-2) | 1, (sw-2) | 1
-    maze = generate_maze(maze_h, maze_w)
-    # Place snake at (1,1), food at (maze_h-2, maze_w-2)
-    snake = [[1, 1]]
-    food = [maze_h-2, maze_w-2]
+    w = curses.newwin(sh, sw, 0, 0)
+    w.keypad(1)
+    speed = 120  # initial speed (ms)
+    w.timeout(speed)
+
+    snk_x = sw//4
+    snk_y = sh//2
+    snake = [
+        [snk_y, snk_x],
+        [snk_y, snk_x-1]
+    ]
+    food = [random.randint(1, sh-2), random.randint(1, sw-2)]
+    w.addch(food[0], food[1], curses.ACS_PI)
+
     key = curses.KEY_RIGHT
-    stdscr.timeout(100)
+    grow = 0
     while True:
-        stdscr.clear()
-        # Draw maze
-        for y in range(maze_h):
-            for x in range(maze_w):
-                stdscr.addch(y, x, maze[y][x])
-        # Draw food
-        stdscr.addch(food[0], food[1], 'F')
-        # Draw snake
-        for y, x in snake:
-            stdscr.addch(y, x, 'S')
-        stdscr.refresh()
-        next_key = stdscr.getch()
+        next_key = w.getch()
         key = key if next_key == -1 else next_key
-        head = snake[0][:]
+
+        new_head = [snake[0][0], snake[0][1]]
         if key == curses.KEY_DOWN:
-            head[0] += 1
+            new_head[0] += 1
         if key == curses.KEY_UP:
-            head[0] -= 1
+            new_head[0] -= 1
         if key == curses.KEY_LEFT:
-            head[1] -= 1
+            new_head[1] -= 1
         if key == curses.KEY_RIGHT:
-            head[1] += 1
-        # Check wall collision
-        if maze[head[0]][head[1]] == '#':
+            new_head[1] += 1
+
+        # Die if hit wall or self
+        if (
+            new_head in snake or
+            new_head[0] in [0, sh] or
+            new_head[1] in [0, sw]
+        ):
             break
-        snake.insert(0, head)
-        if head == food:
-            break  # Win condition
+        snake.insert(0, new_head)
+        if new_head == food:
+            grow += 1  # Only grow by 1
+            speed = max(40, speed - 8)  # Increase speed, min 40ms
+            w.timeout(speed)
+            food = None
+            while food is None:
+                nf = [random.randint(1, sh-2), random.randint(1, sw-2)]
+                food = nf if nf not in snake else None
+            w.addch(food[0], food[1], curses.ACS_PI)
+        if grow > 0:
+            grow -= 1
         else:
-            snake.pop()
+            tail = snake.pop()
+            w.addch(tail[0], tail[1], ' ')
+        # Draw snake: head 'O', body '#'
+        w.addch(snake[0][0], snake[0][1], 'O')
+        for y, x in snake[1:]:
+            w.addch(y, x, '#')
 
 curses.wrapper(main)
