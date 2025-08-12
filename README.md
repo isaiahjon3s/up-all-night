@@ -1,1 +1,1 @@
-Collection of short, simple programs I've created for fun.
+Collection of short, simple programs I've created for fun/learning.
