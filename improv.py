@@ -5,6 +5,8 @@ def main():
 alphabet = list("abcdefghijklmnopqrstuvwxyza")
 
 def improv(word):
+    if not word[0].isalpha():
+        return "Invalid word"
     last_letter = word[-1]
     next_letter = ""
     i = 0
