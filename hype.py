@@ -1,6 +1,6 @@
 def main():
-    text = input("Text: ")
-    print(text.upper())
+    texttomakehype = input("Text: ")
+    print(texttomakehype.upper())
 
 if __name__ == "__main__":
     main()
