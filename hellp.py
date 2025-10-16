@@ -1,18 +1,17 @@
-import random
-
 def main():
     text = input("Enter a text: ")
     print(hellp(text))
 
 def hellp(text):
     hellped = ""
-    i = 0
-    while i < len(text):
-        if text[i] == "l" and not (text[i+1] == "l" or text[i-1] == "l"):
+    for i, (current, next) in enumerate(zip(text, text[1:])): # text[1:] is the rest of the text
+        if current == "l" and next != "l":
             hellped += "ll"
         else:
-            hellped += text[i-1]
-        i += 1
+            hellped += current
+    # Add the last character (it doesn't get zipped)
+    if text:
+        hellped += text[-1]
     return hellped
 
 if __name__ == "__main__":
