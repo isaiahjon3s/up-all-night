@@ -5,3 +5,4 @@ print("Yesterday I was still sick and today I am too but I feel somewhat better 
 print("Still smh")
 print("how stillll")
 print("ughhh still sick")
+print("Still this is insane")
