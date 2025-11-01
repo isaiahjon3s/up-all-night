@@ -12,5 +12,5 @@ print("mostly better but there's sm to do rn")
 print("doing this till saturday")
 print("god I hope this is the last day")
 print("second to last day for sure")
-
+print("done!")
 
