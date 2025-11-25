@@ -3,3 +3,4 @@ def main():
     print("me")
     print("ts")
     print("gemini")
+    print("artificial angles")
