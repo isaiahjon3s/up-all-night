@@ -13,6 +13,9 @@ driving_age = {
 def main():
     try:
         age = int(input("Enter your age: "))
+        if age < 0:
+            print("Invalid age")
+            return
     except ValueError:
         print("Invalid age")
         return
