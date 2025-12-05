@@ -7,6 +7,15 @@ driving_age = {
     "ireland": 17,
     "south africa": 16,
     "india": 18,
+    "pakistan": 18,
+    "bangladesh": 18,
+    "nepal": 18,
+    "bhutan": 18,
+    "maldives": 18,
+    "sri lanka": 18,
+    "malaysia": 18,
+    "singapore": 18,
+    "philippines": 18,
 }
 
 
