@@ -1,0 +1,1 @@
+print("in to college, the plan is yet to fail, this is just a beginning")
